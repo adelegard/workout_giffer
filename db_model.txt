@@ -1,0 +1,12 @@
+ExerciseCollection
+ -item[]
+
+ProgramExercise
+ -exercise_id
+ -order
+ -length
+
+Exercise
+ -title
+ -description
+ -image_url
