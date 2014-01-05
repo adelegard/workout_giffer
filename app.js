@@ -15,9 +15,8 @@ var Exercise = mongoose.model('Exercise', new mongoose.Schema({
   description: String,
   image_url: String
 }));
-
 var Program = mongoose.model('Program', new mongoose.Schema({
-  exercise_id: String,
+  _exercise: {type: mongoose.Schema.ObjectId, ref: 'Exercise'},
   length: Number,
   order: Number
 }));
@@ -114,21 +113,14 @@ app.delete('/api/exercises/:id', function(req, res){
 // });
 
 app.get('/api/programs', function(req, res){
-  return Program.find(function(err, programs) {
+  return Program.find().populate("_exercise").exec(function(err, programs) {
+    console.log("found programs: " + JSON.stringify(programs));
     return res.send(programs);
   });
 });
 
 app.get('/api/programs/:id', function(req, res){
-  return Program.findById(req.params.id, function(err, program) {
-    program.exercise = Exercise.findById(program.exercise_id, function(err, exercise) {
-      exercise.title        = req.body.title;
-      exercise.description  = req.body.description;
-      exercise.image_url    = req.body.image_url;
-      if (!err) {
-        return res.send(exercise);
-      }
-    });
+  return Program.findById(req.params.id).populate("_exercise").exec(function(err, program) {
     if (!err) {
       return res.send(program);
     }
@@ -136,8 +128,9 @@ app.get('/api/programs/:id', function(req, res){
 });
 
 app.put('/api/programs/:id', function(req, res){
+  console.log("put program: " + JSON.stringify(req.body));
   return Program.findById(req.params.id, function(err, program) {
-    program.exercise_id   = req.body.exercise_id;
+    program._exercise   = req.body.exercise_id;
     program.length        = req.body.length;
     program.order         = req.body.order;
 
@@ -152,14 +145,15 @@ app.put('/api/programs/:id', function(req, res){
 
 app.post('/api/programs', function(req, res){
   var program;
+  console.log("post program: " + JSON.stringify(req.body));
   program = new Program({
-    exercise_id:  req.body.exercise_id,
+    _exercise:  req.body.exercise_id,
     length:       req.body.length,
     order:        req.body.order
   });
   program.save(function(err) {
     if (!err) {
-      return console.log("created");
+      return console.log("created: " + JSON.stringify(program));
     }
   });
   return res.send(program);

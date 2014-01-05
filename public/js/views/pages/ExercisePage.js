@@ -1,6 +1,5 @@
 var Globals     = Globals || {};
 Globals.page   = Globals.page || {};
-Globals.Exercises = Globals.Exercises || new Globals.collections.Exercise();
 
 (function () {
   "use strict";
@@ -26,6 +25,7 @@ Globals.Exercises = Globals.Exercises || new Globals.collections.Exercise();
     // loading any preexisting todos that might be saved in *localStorage*.
     initialize: function() {
       var self = this;
+      Globals.Exercises = Globals.Exercises || new Globals.collections.Exercise();
       Globals.Exercises.bind('add',   self.addOne, self);
       Globals.Exercises.bind('reset', self.render, self);
       Globals.Exercises.bind('all',   self.render, self);

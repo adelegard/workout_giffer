@@ -7,10 +7,14 @@ Globals.models  = Globals.models || {};
   Globals.models.Program = Backbone.Model.extend({
     idAttribute: "_id",
 
+    initialize: function(options) {
+      Globals.Programs = Globals.Programs || new Globals.collections.Program();
+    },
+
     // Default attributes for a exercise item
     defaults: function() {
       return {
-        order: Globals.collections.Exercise.nextOrder(),
+        order: Globals.Programs.nextOrder(),
         length: 30
       };
     }

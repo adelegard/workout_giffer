@@ -24,15 +24,19 @@
 	<script src="js/mylibs/backbone.js"></script>
 	<script src="js/mylibs/handlebars-v1.3.0.js"></script>
 	<script src="js/views/BaseView.js"></script>
-	<script src="js/views/components/ExerciseView.js"></script>
+
 	<script src="js/models/ExerciseModel.js"></script>
-	<script src="js/collections/ExerciseCollection.js"></script>
-	<script src="js/views/components/ProgramView.js"></script>
 	<script src="js/models/ProgramModel.js"></script>
+
 	<script src="js/collections/ProgramCollection.js"></script>
+	<script src="js/collections/ExerciseCollection.js"></script>
+
+	<script src="js/views/components/ExerciseView.js"></script>
+	<script src="js/views/components/ProgramView.js"></script>
 	<script src="js/views/pages/HomePage.js"></script>
 	<script src="js/views/pages/ProgramPage.js"></script>
 	<script src="js/views/pages/ExercisePage.js"></script>
+
 	<script src="js/router/router.js"></script>
 	<script src="js/plugins.js"></script>
 	<script src="js/script.js"></script>
@@ -52,7 +56,7 @@
 		<div class="page">
 			<div class="title">
 				<h1>Exercises</h1>
-				<a href="/">Home</a>
+				<a href="#">Home</a>
 			</div>
 			<div class="content">
 				<div id="create-exercise">
@@ -81,7 +85,7 @@
 		<div class="page">
 			<div class="title">
 				<h1>Programs</h1>
-				<a href="/">Home</a>
+				<a href="#">Home</a>
 			</div>
 			<div class="content">
 				<div id="create-program">
@@ -105,8 +109,10 @@
 	<script id="program-item-template" type="text/template">
 		<div class="program">
 			<div class="display">
-				<div>Title: {{title}}</div>
+				<div>Title: {{_exercise.title}}</div>
+				<div>Desc: {{_exercise.description}}</div>
 				<div>Length: {{length}}</div>
+				<div>Order: {{order}}</div>
 				<input id="destroy" type="Button" value="Delete">
 			</div>
 		</div>

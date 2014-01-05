@@ -18,14 +18,15 @@ Globals.views   = Globals.views || {};
     },
 
     // The TodoView listens for changes to its model, re-rendering.
-    initialize: function() {
+    initialize: function(options) {
+      this.model = options.model;
       this.model.bind('change', this.render, this);
       this.model.bind('destroy', this.remove, this);
     },
 
     // Re-render the contents of the todo item.
     render: function() {
-      $(this.el).html(this.template(this.model.toJSON()));
+      this.renderTemplate(this.model.toJSON());
       return this;
     },
 
