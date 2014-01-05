@@ -4,7 +4,7 @@ Globals.page   = Globals.page || {};
 (function () {
   "use strict";
 
-  var CREATE_SELECTOR     = "#create-program";
+  var CREATE_SELECTOR     = "#create-item";
   var EXERCISE_SELECTOR   = CREATE_SELECTOR + " #exercise";
   var LENGTH_SELECTOR     = CREATE_SELECTOR + " #length";
   var ORDER_SELECTOR      = CREATE_SELECTOR + " #order";
@@ -17,7 +17,7 @@ Globals.page   = Globals.page || {};
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-      "click #create-program #create":  "createOnClick"
+      "click #create-item #create":  "createOnClick"
     },
 
     // At initialization we bind to the relevant events on the `Todos`
@@ -60,12 +60,12 @@ Globals.page   = Globals.page || {};
     // appending its element to the `<ul>`.
     addOne: function(program) {
       var view = new Globals.views.Program({model: program});
-      this.$("#program-list").append(view.render().el);
+      this.$("#item-list").append(view.render().el);
     },
 
     // Add all items in the **Todos** collection at once.
     addAll: function() {
-      this.$("#program-list").empty();
+      this.$("#item-list").empty();
       Globals.Programs.each($.proxy(this, 'addOne'));
     },
 

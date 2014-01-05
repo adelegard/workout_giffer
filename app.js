@@ -16,9 +16,13 @@ var Exercise = mongoose.model('Exercise', new mongoose.Schema({
   image_url: String
 }));
 var Program = mongoose.model('Program', new mongoose.Schema({
-  _exercise: {type: mongoose.Schema.ObjectId, ref: 'Exercise'},
-  length: Number,
-  order: Number
+  title: String,
+  description: String,
+  exercises: [
+    exercise: {type: mongoose.Schema.ObjectId, ref: 'Exercise'},
+    length: Number,
+    order: Number
+  ]
 }));
 
 app.configure(function(){
@@ -113,14 +117,14 @@ app.delete('/api/exercises/:id', function(req, res){
 // });
 
 app.get('/api/programs', function(req, res){
-  return Program.find().populate("_exercise").exec(function(err, programs) {
+  return Program.find().populate("exercises.exercise").exec(function(err, programs) {
     console.log("found programs: " + JSON.stringify(programs));
     return res.send(programs);
   });
 });
 
 app.get('/api/programs/:id', function(req, res){
-  return Program.findById(req.params.id).populate("_exercise").exec(function(err, program) {
+  return Program.findById(req.params.id).populate("exercises.exercise").exec(function(err, program) {
     if (!err) {
       return res.send(program);
     }
@@ -130,7 +134,9 @@ app.get('/api/programs/:id', function(req, res){
 app.put('/api/programs/:id', function(req, res){
   console.log("put program: " + JSON.stringify(req.body));
   return Program.findById(req.params.id, function(err, program) {
-    program._exercise   = req.body.exercise_id;
+    program.title         = req.body.title,
+    program.description   = req.body.description,
+    program.exercises     = req.body.exercises;
     program.length        = req.body.length;
     program.order         = req.body.order;
 
@@ -147,7 +153,9 @@ app.post('/api/programs', function(req, res){
   var program;
   console.log("post program: " + JSON.stringify(req.body));
   program = new Program({
-    _exercise:  req.body.exercise_id,
+    title:        req.body.title,
+    description:  req.body.description,
+    exercises:    req.body.exercises,
     length:       req.body.length,
     order:        req.body.order
   });

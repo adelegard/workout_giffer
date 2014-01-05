@@ -4,7 +4,7 @@ Globals.page   = Globals.page || {};
 (function () {
   "use strict";
 
-  var CREATE_SELECTOR       = "#create-exercise";
+  var CREATE_SELECTOR       = "#create-item";
   var TITLE_SELECTOR        = CREATE_SELECTOR + " #title";
   var DESCRIPTION_SELECTOR  = CREATE_SELECTOR + " #description";
   var IMAGE_URL_SELECTOR    = CREATE_SELECTOR + " #image_url";
@@ -17,7 +17,7 @@ Globals.page   = Globals.page || {};
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-      "click #create-exercise #create":  "createOnClick"
+      "click #create-item #create":  "createOnClick"
     },
 
     // At initialization we bind to the relevant events on the `Todos`
@@ -50,7 +50,7 @@ Globals.page   = Globals.page || {};
     // appending its element to the `<ul>`.
     addOne: function(exercise) {
       var view = new Globals.views.Exercise({model: exercise});
-      this.$("#exercise-list").append(view.render().el);
+      this.$("#item-list").append(view.render().el);
     },
 
     // Add all items in the **Todos** collection at once.

@@ -129,107 +129,105 @@ body {
   line-height: 1;
 }
 
-#create-exercise {
+#create-item {
   position: relative;
-}
-#create-exercise input {
-	margin-top:20px;
-  width: 466px;
-  font-size: 24px;
-  font-family: inherit;
-  line-height: 1.4em;
-  border: 0;
-  outline: none;
-  padding: 6px;
-  border: 1px solid #999999;
-  -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
-  -o-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
-}
-#create-exercise input::-webkit-input-placeholder {
-  font-style: italic;
-}
-#create-exercise span {
-  position: absolute;
-  z-index: 999;
-  width: 170px;
-  left: 50%;
-  margin-left: -85px;
+  input {
+  	margin-top:20px;
+    width: 466px;
+    font-size: 24px;
+    font-family: inherit;
+    line-height: 1.4em;
+    border: 0;
+    outline: none;
+    padding: 6px;
+    border: 1px solid #999999;
+    -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
+    -o-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
+  }
+  input::-webkit-input-placeholder {
+    font-style: italic;
+  }
+  span {
+    position: absolute;
+    z-index: 999;
+    width: 170px;
+    left: 50%;
+    margin-left: -85px;
+  }
 }
 
-#exercise-list {
+#item-list {
   margin-top: 10px;
+  li {
+    padding: 12px 20px 11px 0;
+    position: relative;
+    font-size: 24px;
+    line-height: 1.1em;
+    border-bottom: 1px solid #cccccc;
+    &:after {
+      content: "\0020";
+      display: block;
+      height: 0;
+      clear: both;
+      overflow: hidden;
+      visibility: hidden;
+    }
+    &.editing {
+      padding: 0;
+      border-bottom: 0;
+    }
+  }
+  .editing .display,
+  .edit {
+    display: none;
+  }
+  .editing .edit {
+    display: block;
+  }
+  .editing input {
+    width: 444px;
+    font-size: 24px;
+    font-family: inherit;
+    margin: 0;
+    line-height: 1.6em;
+    border: 0;
+    outline: none;
+    padding: 10px 7px 0px 27px;
+    border: 1px solid #999999;
+    -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
+    -o-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
+  }
+  .check {
+    position: relative;
+    top: 9px;
+    margin: 0 10px 0 7px;
+    float: left;
+  }
+  .done .item-text {
+    text-decoration: line-through;
+    color: #777777;
+  }
+  .item-destroy {
+    position: absolute;
+    right: 5px;
+    top: 14px;
+    display: none;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    background: url('/img/destroy.png') no-repeat 0 0;
+  }
+  li:hover .item-destroy {
+    display: block;
+  }
+  .item-destroy:hover {
+    background-position: 0 -20px;
+  }
 }
-#exercise-list li {
-  padding: 12px 20px 11px 0;
-  position: relative;
-  font-size: 24px;
-  line-height: 1.1em;
-  border-bottom: 1px solid #cccccc;
-}
-#exercise-list li:after {
-  content: "\0020";
-  display: block;
-  height: 0;
-  clear: both;
-  overflow: hidden;
-  visibility: hidden;
-}
-#exercise-list li.editing {
-  padding: 0;
-  border-bottom: 0;
-}
-#exercise-list .editing .display,
-#exercise-list .edit {
-  display: none;
-}
-#exercise-list .editing .edit {
-  display: block;
-}
-#exercise-list .editing input {
-  width: 444px;
-  font-size: 24px;
-  font-family: inherit;
-  margin: 0;
-  line-height: 1.6em;
-  border: 0;
-  outline: none;
-  padding: 10px 7px 0px 27px;
-  border: 1px solid #999999;
-  -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
-  -o-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
-}
-#exercise-list .check {
-  position: relative;
-  top: 9px;
-  margin: 0 10px 0 7px;
-  float: left;
-}
-#exercise-list .done .exercise-text {
-  text-decoration: line-through;
-  color: #777777;
-}
-#exercise-list .exercise-destroy {
-  position: absolute;
-  right: 5px;
-  top: 14px;
-  display: none;
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-  background: url('/img/destroy.png') no-repeat 0 0;
-}
-#exercise-list li:hover .exercise-destroy {
-  display: block;
-}
-#exercise-list .exercise-destroy:hover {
-  background-position: 0 -20px;
-}
-
-
 
 
 
