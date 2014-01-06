@@ -14,7 +14,14 @@ Globals.views   = Globals.views || {};
 
     // The DOM events specific to an item.
     events: {
-      "click #destroy"             : "remove"
+      "click #destroy-program-exercise" : "remove"
+    },
+
+    // The TodoView listens for changes to its model, re-rendering.
+    initialize: function() {
+      _.bindAll(this);
+      this.model.bind('change', this.render, this);
+      this.model.bind('destroy', this.remove, this);
     },
 
     // Re-render the contents of the todo item.
@@ -29,10 +36,24 @@ Globals.views   = Globals.views || {};
       // this.input.focus();
     },
 
+    // Close the `"editing"` mode, saving changes to the todo.
+    close: function() {
+      this.model.save({text: this.input.val()});
+      $(this.el).removeClass("editing");
+    },
+
+    create: function(e) {
+      this.close();
+    },
+
     // Remove this view from the DOM.
     remove: function() {
       $(this.el).remove();
-    }
+    },
 
+    // Remove the item, destroy the model.
+    clear: function() {
+      this.model.destroy();
+    }
   });
 }());

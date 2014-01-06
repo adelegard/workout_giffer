@@ -14,11 +14,12 @@ Globals.views   = Globals.views || {};
 
     // The DOM events specific to an item.
     events: {
-      "click #destroy"             : "clear"
+      "click #destroy-exercise"             : "clear"
     },
 
     // The TodoView listens for changes to its model, re-rendering.
     initialize: function() {
+      _.bindAll(this);
       this.model.bind('change', this.render, this);
       this.model.bind('destroy', this.remove, this);
     },

@@ -18,14 +18,12 @@ var Exercise = mongoose.model('Exercise', new mongoose.Schema({
 var Program = mongoose.model('Program', new mongoose.Schema({
   title: String,
   description: String,
-  exercises: [{
-    exercise: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'Exercise'
-    },
-    length: Number,
-    order: Number
-  }]
+  exercises: [{type: mongoose.Schema.ObjectId, ref: 'ProgramExercise'}]
+}));
+var ProgramExercise = mongoose.model('ProgramExercise', new mongoose.Schema({
+  exercise: {type: mongoose.Schema.ObjectId, ref: 'Exercise'},
+  length: Number,
+  order: Number
 }));
 
 app.configure(function(){
@@ -41,8 +39,6 @@ app.configure(function(){
   app.use(express.static(pubDir));
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
   app.set('views', path.join(application_root, "views"));
-  // app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-  // app.set('view engine', 'html');
   app.engine('html', require('ejs').renderFile);
 });
 
@@ -54,10 +50,6 @@ app.get('/', function(req, res){
 
 
 // exercise
-
-// app.get('/exercise', function(req, res){
-//   res.render('exercise', {title: "MongoDB Backed EXERCISE App"});
-// });
 
 app.get('/api/exercises', function(req, res){
   return Exercise.find(function(err, exercises) {
@@ -80,7 +72,7 @@ app.put('/api/exercises/:id', function(req, res){
     exercise.image_url    = req.body.image_url;
     return exercise.save(function(err) {
       if (!err) {
-        console.log("updated");
+        console.log("updated: " + JSON.stringify(exercise));
       }
       return res.send(exercise);
     });
@@ -96,7 +88,7 @@ app.post('/api/exercises', function(req, res){
   });
   exercise.save(function(err) {
     if (!err) {
-      return console.log("created");
+      console.log("created: " + JSON.stringify(exercise));
     }
   });
   return res.send(exercise);
@@ -106,7 +98,7 @@ app.delete('/api/exercises/:id', function(req, res){
   return Exercise.findById(req.params.id, function(err, exercise) {
     return exercise.remove(function(err) {
       if (!err) {
-        console.log("removed");
+        console.log("removed: " + JSON.stringify(exercise));
         return res.send('')
       }
     });
@@ -115,20 +107,16 @@ app.delete('/api/exercises/:id', function(req, res){
 
 // program
 
-// app.get('/program', function(req, res){
-//   res.render('program', {title: "MongoDB Backed Program App"});
-// });
-
 app.get('/api/programs', function(req, res){
-  return Program.find().populate("exercises.exercise").exec(function(err, programs) {
+  return Program.find().populate("exercises").exec(function(err, programs) {
     console.log("found programs: " + JSON.stringify(programs));
     return res.send(programs);
   });
 });
 
 app.get('/api/programs/:id', function(req, res){
-  return Program.findById(req.params.id).populate("exercises.exercise").exec(function(err, program) {
-    // console.log("found program: " + JSON.stringify(program));
+  return Program.findById(req.params.id).populate("exercises").exec(function(err, program) {
+    console.log("found program: " + JSON.stringify(program));
     if (!err) {
       return res.send(program);
     }
@@ -144,7 +132,7 @@ app.put('/api/programs/:id', function(req, res){
 
     return program.save(function(err) {
       if (!err) {
-        console.log("updated");
+        console.log("updated: " + JSON.stringify(program));
       }
       return res.send(program);
     });
@@ -170,7 +158,62 @@ app.delete('/api/programs/:id', function(req, res){
   return Program.findById(req.params.id, function(err, program) {
     return program.remove(function(err) {
       if (!err) {
-        console.log("removed");
+        console.log("removed: " + JSON.stringify(program));
+        return res.send('')
+      }
+    });
+  });
+});
+
+// program-exercise
+
+app.get('/api/program-exercises', function(req, res){
+  return ProgramExercise.find().populate("exercise").exec(function(err, program_exercises) {
+    return res.send(program_exercises);
+  });
+});
+
+app.get('/api/program-exercises/:id', function(req, res){
+  return ProgramExercise.findById(req.params.id).populate("exercise").exec(function(err, program_exercises) {
+    if (!err) {
+      return res.send(program_exercises);
+    }
+  });
+});
+
+app.put('/api/program-exercises/:id', function(req, res){
+  return ProgramExercise.findById(req.params.id, function(err, program_exercise) {
+    program_exercise.exercise        = req.body.exercise;
+    program_exercise.length  = req.body.length;
+    program_exercise.order    = req.body.order;
+    return program_exercise.save(function(err) {
+      if (!err) {
+        console.log("updated: " + JSON.stringify(program_exercise));
+      }
+      return res.send(program_exercise);
+    });
+  });
+});
+
+app.post('/api/program-exercises', function(req, res){
+  var program_exercise = new ProgramExercise({
+    exercise: req.body.exercise,
+    length:   req.body.length,
+    order:    req.body.order
+  });
+  program_exercise.save(function(err) {
+    if (!err) {
+      console.log("created: " + JSON.stringify(program_exercise));
+    }
+  });
+  return res.send(program_exercise);
+});
+
+app.delete('/api/program-exercises/:id', function(req, res){
+  return ProgramExercise.findById(req.params.id, function(err, program_exercise) {
+    return program_exercise.remove(function(err) {
+      if (!err) {
+        console.log("removed: " + JSON.stringify(program_exercise));
         return res.send('')
       }
     });

@@ -12,7 +12,7 @@ Globals.page   = Globals.page || {};
   var LENGTH_SELECTOR       = ADD_EXERCISE_SELECTOR + " #length";
   var ORDER_SELECTOR        = ADD_EXERCISE_SELECTOR + " #order";
 
-  var PROGRAM_EXERCISES_SELECTOR = CREATE_SELECTOR + " #program-exercises";
+  var PROGRAM_EXERCISES_SELECTOR = CREATE_SELECTOR + " .program-exercises";
   var PROGRAM_EXERCISES_PROGRAM_SELECTOR = PROGRAM_EXERCISES_SELECTOR + " .program";
 
   Globals.page.Program = Globals.views.Base.extend({
@@ -31,35 +31,43 @@ Globals.page   = Globals.page || {};
     // collection, when items are added or changed. Kick things off by
     // loading any preexisting todos that might be saved in *localStorage*.
     initialize: function() {
-      Globals.Exercises = Globals.Exercises || new Globals.collections.Exercise();
-      Globals.Programs  = Globals.Programs || new Globals.collections.Program();
+      _.bindAll(this);
+      this.exerciseCollection = Globals.collectionManager.addCollection({
+          id: "exercise",
+          type: Globals.collections.Exercise,
+          fetch: true
+      });
+      this.programCollection = Globals.collectionManager.addCollection({
+          id: "program",
+          type: Globals.collections.Program,
+          fetch: true
+      });
+      this.programExerciseCollection = Globals.collectionManager.addCollection({
+          id: "programExercise",
+          type: Globals.collections.ProgramExercise,
+          fetch: true
+      });
 
-      Globals.Programs.bind('add',   this.addOne, this);
-      Globals.Programs.bind('reset', this.render, this);
-      Globals.Programs.bind('all',   this.addAll, this);
+      this.programCollection.unbind('add')  .bind('add',   this.addOne, this);
+      this.programCollection.unbind('reset').bind('reset', this.render, this);
+      this.programCollection.unbind('all')  .bind('all',   this.addAll, this);
 
-      Globals.Exercises.bind('reset', this.render, this);
-      Globals.Exercises.bind('all',   this.render, this);
+      this.exerciseCollection.unbind('add')   .bind('add',   this.render, this);
+      this.exerciseCollection.unbind('reset') .bind('reset', this.render, this);
+      this.exerciseCollection.unbind('all')   .bind('all',   this.render, this);
 
-      Globals.Exercises.fetch();
-      Globals.Programs.fetch();
+      this.programExerciseCollection.unbind('add')   .bind('add',   this.render, this);
+      this.programExerciseCollection.unbind('reset') .bind('reset', this.render, this);
+      this.programExerciseCollection.unbind('all')   .bind('all',   this.render, this);
     },
 
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
     render: function() {
-      // var exercises = Globals.Exercises.map(function(exercise) {
-      //   return {
-      //     title: exercise.getTitle(),
-      //     description: exercise.getDescription(),
-      //     id: exercise.getId()
-      //   }
-      // });
-
       this.renderTemplate({
-        exercises: Globals.Exercises.toJSON()
+        exercises: this.exerciseCollection.toJSON()
       });
-      // this.addAll();
+      this.addAll();
       return this;
     },
 
@@ -73,7 +81,7 @@ Globals.page   = Globals.page || {};
     // Add all items in the **Todos** collection at once.
     addAll: function() {
       this.$("#item-list").empty();
-      Globals.Programs.each($.proxy(this, 'addOne'));
+      this.programCollection.each($.proxy(this, 'addOne'));
     },
 
     onAddExerciseClick: function(e) {
@@ -100,6 +108,7 @@ Globals.page   = Globals.page || {};
     // If you hit return in the main input field, and there is text to save,
     // create new **Todo** model persisting it to *localStorage*.
     createOnClick: function(e) {
+      var self = this;
       var title = this.$(TITLE_SELECTOR).val();
       var description = this.$(DESCRIPTION_SELECTOR).val();
 
@@ -113,14 +122,28 @@ Globals.page   = Globals.page || {};
         })
       });
       if (!title || !description || !exercises.length === 0) return;
-      Globals.Programs.create({
-        title: title,
-        description: description,
-        exercises: exercises
-      });
-      this.$(TITLE_SELECTOR).val('');
-      this.$(DESCRIPTION_SELECTOR).val('');
-      this.$(PROGRAM_EXERCISES_SELECTOR).empty();
+      for (var i=0; i<exercises.length; i++) {
+        var programExercise = exercises[i];
+        this.programExerciseCollection.create({
+          exercise: programExercise.exercise,
+          length: programExercise.length,
+          order: programExercise.order
+        }, {
+          silent: true,
+          wait: true,
+          success: function(collection, response) {
+            var programExerciseIds = _.map(collection.models, function(pe) { return pe.get("exercise"); });
+            self.programCollection.create({
+              title: title,
+              description: description,
+              exercises: programExerciseIds
+            });
+            self.$(TITLE_SELECTOR).val('');
+            self.$(DESCRIPTION_SELECTOR).val('');
+            self.$(PROGRAM_EXERCISES_SELECTOR).empty();
+          }
+        });
+      }
     }
   });
 }());

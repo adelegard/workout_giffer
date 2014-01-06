@@ -2,7 +2,7 @@ var Globals     = Globals || {};
 Globals.models  = Globals.models || {};
 
 (function () {
-    "use strict";
+  "use strict";
 
   Globals.models.ProgramExercise = Backbone.Model.extend({
     idAttribute: "_id"

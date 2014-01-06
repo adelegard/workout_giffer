@@ -24,23 +24,20 @@ Globals.page   = Globals.page || {};
     // collection, when items are added or changed. Kick things off by
     // loading any preexisting todos that might be saved in *localStorage*.
     initialize: function() {
-      var self = this;
-      Globals.Exercises = Globals.Exercises || new Globals.collections.Exercise();
-      Globals.Exercises.bind('add',   self.addOne, self);
-      Globals.Exercises.bind('reset', self.render, self);
-      Globals.Exercises.bind('all',   self.render, self);
-
-      Globals.Exercises.fetch();
+      _.bindAll(this);
+      this.exerciseCollection = Globals.collectionManager.addCollection({
+        id: "exercise",
+        type: Globals.collections.Exercise,
+        fetch: true
+      });
+      this.exerciseCollection.unbind('add').bind('add',   this.addOne, this);
+      this.exerciseCollection.unbind('reset').bind('reset', this.render, this);
+      this.exerciseCollection.unbind('all').bind('all',   this.render, this);
     },
 
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
     render: function() {
-      // this.$('#todo-stats').html(this.statsTemplate({
-      //   total:      Globals.Exercises.length,
-      //   done:       Globals.Exercises.done().length,
-      //   remaining:  Globals.Exercises.remaining().length
-      // }));
       this.renderTemplate({});
       this.addAll();
       return this;
@@ -57,7 +54,7 @@ Globals.page   = Globals.page || {};
     addAll: function() {
       console.log("add all");
       var self = this;
-      Globals.Exercises.each($.proxy(self, 'addOne'));
+      this.exerciseCollection.each($.proxy(self, 'addOne'));
     },
 
     getTitle: function() {
@@ -81,7 +78,7 @@ Globals.page   = Globals.page || {};
       var description = self.getDescription().val();
       var image_url = self.getImageUrl().val();
       if (!title || !description || !image_url) return;
-      Globals.Exercises.create({
+      self.exerciseCollection.create({
         title: title,
         description: description,
         image_url: image_url
