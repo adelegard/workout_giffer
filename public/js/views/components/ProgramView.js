@@ -2,7 +2,7 @@ var Globals     = Globals || {};
 Globals.views   = Globals.views || {};
 
 (function () {
-    "use strict";
+  "use strict";
 
   Globals.views.Program = Globals.views.Base.extend({
 
@@ -14,7 +14,7 @@ Globals.views   = Globals.views || {};
 
     // The DOM events specific to an item.
     events: {
-      "click #destroy"             : "clear"
+      "click #destroy-program"             : "clear"
     },
 
     // The TodoView listens for changes to its model, re-rendering.

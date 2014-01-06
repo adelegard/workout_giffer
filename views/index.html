@@ -19,7 +19,7 @@
 		</div>
 	</div>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-	<script><window class="jQuery">|| document.write('<script src="js/libs/jquery-1.6.2.min.js"><\\/script>')</window></script>
+	<script><window class="jQuery">|| document.write('<script src="js/libs/jquery-1.6.2.min.js"></script>')</window></script>
 	<script src="js/mylibs/underscore.js"></script>
 	<script src="js/mylibs/backbone.js"></script>
 	<script src="js/mylibs/handlebars-v1.3.0.js"></script>
@@ -27,12 +27,14 @@
 
 	<script src="js/models/ExerciseModel.js"></script>
 	<script src="js/models/ProgramModel.js"></script>
+	<script src="js/models/ProgramExerciseModel.js"></script>
 
 	<script src="js/collections/ProgramCollection.js"></script>
 	<script src="js/collections/ExerciseCollection.js"></script>
 
 	<script src="js/views/components/ExerciseView.js"></script>
 	<script src="js/views/components/ProgramView.js"></script>
+	<script src="js/views/components/ProgramExerciseView.js"></script>
 	<script src="js/views/pages/HomePage.js"></script>
 	<script src="js/views/pages/ProgramPage.js"></script>
 	<script src="js/views/pages/ExercisePage.js"></script>
@@ -40,7 +42,6 @@
 	<script src="js/router/router.js"></script>
 	<script src="js/plugins.js"></script>
 	<script src="js/script.js"></script>
-	<script src="js/templates.js"></script>
 
 	<script id="home-page-template" type="text/template">
 		<div class="page">
@@ -52,6 +53,8 @@
 			</div>
 		</div>
 	</script>
+
+	<!-- Exercise Page -->
 	<script id="exercise-page-template" type="text/template">
 		<div class="page">
 			<div class="title">
@@ -71,16 +74,20 @@
 			</div>
 		</div>
 	</script>
+	<!-- Exercise Item -->
 	<script id="exercise-item-template" type="text/template">
 		<div class="exercise">
 			<div class="display">
+				<input class="id" type="hidden" value="{{_id}}"/>
+				<img src="{{{image_url}}}"/>
 				<div class="title">Title: {{title}} </div>
 				<div class="description">Description: {{description}}</div>
-				<div class="image_url">Image: {{image_url}}</div>
+				<!--<div class="image_url">Image: {{image_url}}</div>-->
 				<input id="destroy" type="Button" value="Delete">
 			</div>
 		</div>
 	</script>
+	<!-- Program Page -->
 	<script id="program-page-template" type="text/template">
 		<div class="page">
 			<div class="title">
@@ -91,15 +98,19 @@
 				<div id="create-item">
 					<input id="title" placeholder="Program title?" type="text">
 					<input id="description" placeholder="Program description?" type="text">
-					{{#if exercises}}
-						<select id="exercise">
-							{{#each exercises}}
-								<option value="{{_id}}">{{{title}}}</option>
-							{{/each}}
-						</select>
-					{{/if}}
-					<input id="length" placeholder="Program length?" type="text" value="{{defaults.length}}">
-					<input id="order" placeholder="Exercise order?" type="text">
+					<div id="add-exercise">
+						{{#if exercises}}
+							<select id="exercise">
+								{{#each exercises}}
+									<option value="{{_id}}" data-title="{{{title}}}" data-description="{{{description}}}" data-image_url="{{{image_url}}}">{{{title}}}</option>
+								{{/each}}
+							</select>
+						{{/if}}
+						<input id="length" placeholder="Program length?" type="text" value="{{defaults.length}}">
+						<input id="order" placeholder="Exercise order?" type="text">
+						<input id="add" type="button" value="Add">
+					</div>
+					<ul id="program-exercises"></ul>
 					<input id="create" type="button" value="Create">
 				</div>
 				<div id="programs">
@@ -108,14 +119,40 @@
 			</div>
 		</div>
 	</script>
+	<!-- Program Exercise Item -->
+	<script id="program-exercise-item-template" type="text/template">
+		<div class="program">
+			<div class="display">
+				<input class="exercise_id" type="hidden" value="{{exercise.id}}"/>
+				<div>Title: {{exercise.title}}</div>
+				<div class="length" data-value="{{length}}">Length: {{length}}</div>
+				<div class="order" data-value="{{order}}">Order: {{order}}</div>
+				<input id="destroy" type="Button" value="Delete">
+			</div>
+		</div>
+	</script>
+
+	<!-- Program Item -->
 	<script id="program-item-template" type="text/template">
 		<div class="program">
 			<div class="display">
-				<div>Title: {{_exercise.title}}</div>
-				<div>Desc: {{_exercise.description}}</div>
-				<div>Length: {{length}}</div>
-				<div>Order: {{order}}</div>
-				<input id="destroy" type="Button" value="Delete">
+				<div>Title: {{{title}}}</div>
+				<div>Description: {{{description}}}</div>
+				<ul id="program-exercises">
+					{{#each exercises}}
+						<li>
+							<input class="id" type="hidden" value="{{_id}}"/>
+							<img src="{{{exercise.image_url}}}"/>
+							<div>Title: {{exercise.title}} </div>
+							<div>Description: {{exercise.description}}</div>
+							<!--<div>Image: {{exercise.image_url}}</div>-->
+							<div>Length: {{length}}</div>
+							<div>Order: {{order}}</div>
+							<input id="destroy-exercise" type="Button" value="Delete Exercise">
+						</li>
+					{{/each}}
+				</ul>
+				<input id="destroy-program" type="Button" value="Delete Program">
 			</div>
 		</div>
 	</script>

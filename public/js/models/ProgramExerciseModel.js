@@ -2,9 +2,9 @@ var Globals     = Globals || {};
 Globals.models  = Globals.models || {};
 
 (function () {
-  "use strict";
+    "use strict";
 
-  Globals.models.Program = Backbone.Model.extend({
+  Globals.models.ProgramExercise = Backbone.Model.extend({
     idAttribute: "_id"
 
     // initialize: function(options) {
@@ -13,10 +13,10 @@ Globals.models  = Globals.models || {};
 
     // Default attributes for a exercise item
     // defaults: function() {
-    //   return {
-    //     order: Globals.Programs.nextOrder(),
-    //     length: 30
-    //   };
+      // return {
+      //   order: Globals.Programs.nextOrder(),
+      //   length: 30
+      // };
     // }
   });
 }());
